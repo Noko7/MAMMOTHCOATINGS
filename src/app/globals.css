@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  --mammoth-brown: #6b3f1d;
+  --outline-brown: #2b1a12;
+  --ivory: #f2e7d5;
+  --epoxy-blue: #2f8fe8;
+  --steel-gray: #6b7177;
+  --light-silver: #c9cdd1;
+  --charcoal-start: #1c1f24;
+  --charcoal-end: #3a3f46;
+}
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --color-charcoal: var(--charcoal-start);
+  --color-ivory: var(--ivory);
+  --color-blue-accent: var(--epoxy-blue);
+  --color-brown-accent: var(--mammoth-brown);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(160deg, var(--charcoal-start), var(--charcoal-end));
+  color: var(--ivory);
+  font-family: var(--font-body), sans-serif;
+}
+
+.font-headline {
+  font-family: var(--font-headline), sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.cta-primary {
+  border-radius: 999px;
+  background: linear-gradient(120deg, #2f8fe8, #6b3f1d);
+  color: #fefefe;
+  font-weight: 700;
+  padding: 0.78rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 30px rgba(47, 143, 232, 0.28);
+}
+
+.cta-secondary {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #f2e7d5;
+  font-weight: 700;
+  padding: 0.78rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  transition: background 180ms ease;
+}
+
+.cta-secondary:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.stat-card {
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem;
+}
+
+.stat-value {
+  font-family: var(--font-headline), sans-serif;
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--ivory);
+}
+
+.stat-label {
+  color: rgba(242, 231, 213, 0.84);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
