@@ -1,0 +1,87 @@
+🦣 MAMMOTH COATINGS - WEBSITE DEPLOYMENT GUIDE
+
+This is your complete, production-ready website for mammothcoat.com
+
+═══════════════════════════════════════════════════════════════════════════
+
+✅ WHAT'S ALREADY DONE:
+
+  ✓ Website built with Next.js (ultra-fast, optimized for Vercel)
+  ✓ Multi-location pages (Raleigh, Apex, Durham) with SEO
+  ✓ High-conversion CTA buttons (Free Quote, Call, Text)
+  ✓ Calendly booking widget integrated
+  ✓ Before/after galleries, testimonials, trust elements
+  ✓ Brand colors and professional design applied
+  ✓ All code committed to git
+  ✓ Production build tested and verified
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 TO DEPLOY TO MAMMOTHCOAT.COM (3 SIMPLE STEPS):
+
+STEP 1: Run the deployment script (handles GitHub & provides Vercel guidance)
+
+  PowerShell:     .\deploy.ps1
+  Command Prompt: deploy.bat
+
+STEP 2: When prompted, create a GitHub repository at https://github.com/new
+
+  Name:           mammoth-coatings
+  Type:           Private (recommended)
+  Click:          "Create repository"
+  Copy:           The HTTPS URL shown
+
+STEP 3: Go to https://vercel.com
+
+  1. Sign in (or create account)
+  2. Click "+ New Project"
+  3. Import your GitHub repo
+  4. Click "Deploy" (takes 2-3 minutes)
+  5. Add custom domain: mammothcoat.com
+  6. Use Vercel nameservers or add DNS records
+
+Note: After DNS propagates (5-30 min), your site goes live at https://mammothcoat.com
+
+═══════════════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION:
+
+  README.md           - Project overview and quick reference
+  DEPLOYMENT.md       - Full step-by-step deployment instructions
+  LAUNCH.md           - Quick launch checklist
+  deploy.ps1          - PowerShell deployment automation
+  deploy.bat          - Command Prompt deployment automation
+
+═══════════════════════════════════════════════════════════════════════════
+
+🔧 LOCAL DEVELOPMENT:
+
+  npm install         - Install dependencies (first time only)
+  npm run dev         - Start dev server at http://localhost:3000
+  npm run build       - Build for production
+  npm run lint        - Check code quality
+
+═══════════════════════════════════════════════════════════════════════════
+
+📋 CUSTOMIZE BEFORE DEPLOYING (Optional):
+
+  1. Update contact info:      src/lib/site-data.ts (phone, Calendly link)
+  2. Change colors/fonts:      src/app/globals.css
+  3. Edit copy/testimonials:   src/lib/site-data.ts
+
+═══════════════════════════════════════════════════════════════════════════
+
+❓ QUESTIONS?
+
+  • Full Vercel docs:         https://vercel.com/docs
+  • Full Next.js docs:        https://nextjs.org/docs
+  • Calendly support:         https://calendly.com/support
+
+═══════════════════════════════════════════════════════════════════════════
+
+Ready to launch? Run:
+
+  PowerShell:     .\deploy.ps1
+  Cmd Prompt:     deploy.bat
+
+Good luck! 🚀
