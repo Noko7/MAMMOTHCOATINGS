@@ -1,35 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "env": {
-    "NEXT_PUBLIC_SITE_URL": {
-      "default": "https://mammothcoat.com"
-    }
-  },
-  "regions": [
-    "iad1"
-  ],
-  "framework": "nextjs",
-  "projectSettings": {
-    "nodeVersion": "18.x",
-    "outputDirectory": ".next"
-  },
-  "git": {
-    "deploymentEnabled": true,
-    "productionBranch": "main"
-  },
+  "regions": ["iad1"],
   "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store"
-        }
-      ]
-    },
     {
       "source": "/images/(.*)",
       "headers": [
@@ -38,18 +10,6 @@
           "value": "public, max-age=31536000, immutable"
         }
       ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
-    }
-  ],
-  "crons": [
-    {
-      "path": "/api/revalidate",
-      "schedule": "0 0 * * *"
     }
   ]
 }
