@@ -285,7 +285,7 @@ export function ContractorsGate() {
           <p className="mt-1 text-xs text-slate-400">{fmt2(customerPrice / sqft)}/sqft</p>
         </article>
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Your Cut ({Math.round(yourPct * 100)}%)</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Mammoth Coat&apos;s Cut</p>
           <p className="mt-2 text-3xl font-bold text-emerald-300">{fmt(yourFee)}</p>
           <p className="mt-1 text-xs text-slate-400">{fmt2(yourFee / sqft)}/sqft</p>
         </article>
