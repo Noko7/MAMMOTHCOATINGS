@@ -74,12 +74,7 @@ export type GalleryImage = { src: string; alt: string };
 export const galleryImages: GalleryImage[] = [
   { src: "/images/epoxy_floor_01.jpeg", alt: "Epoxy floor installation" },
   { src: "/images/dark_flakes_epoxy.jpg", alt: "Dark flake epoxy finish" },
-  { src: "/images/person-pouring-epoxy-2.jpeg", alt: "Epoxy coating application in progress" },
   { src: "/images/2-car-garage-after.jpg", alt: "Garage epoxy floor finished result" },
-  { src: "/images/pro-installer-1943-4.jpeg", alt: "Detailed epoxy installation work" },
-  { src: "/images/person-pouring-epoxy-1.jpeg", alt: "Technician pouring epoxy coating" },
-  { src: "/images/pro-installer-1941-3.jpeg", alt: "Professional installer applying epoxy floor" },
-  { src: "/images/pro-installer-1943-5.jpeg", alt: "Installer finishing epoxy floor coating" },
   { src: "/images/2-car-garage-after-v2.jpg", alt: "2-car garage epoxy floor after" },
   { src: "/images/closeup_flakes.jpg", alt: "Close-up of decorative flake epoxy" },
   { src: "/images/basement_after_epoxy.jpg", alt: "Basement floor after epoxy coating" },
@@ -88,7 +83,6 @@ export const galleryImages: GalleryImage[] = [
   { src: "/images/kitchen_epoxy.jpg", alt: "Kitchen epoxy floor" },
   { src: "/images/epoxy_walmart_break_room.jpg", alt: "Commercial break room epoxy floor" },
   { src: "/images/restaurant_after_raleigh_epoxy.jpg", alt: "Restaurant floor epoxy after" },
-  { src: "/images/raleigh_epoxy_walmart_entryway_after.jpg", alt: "Commercial entryway epoxy floor" },
 ];
 
 export const links = {
