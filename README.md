@@ -124,8 +124,8 @@ Located in `src/lib/site-data.ts`:
 ```typescript
 export const links = {
   calendly: "https://calendly.com/mammothcoat-info/free-quote-and-surface-assessment",
-  call: "tel:+19199193281",
-  text: "sms:+19199193281",
+  call: "tel:+19199192381",
+  text: "sms:+19199192381",
 };
 ```
 

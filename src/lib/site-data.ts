@@ -1,13 +1,110 @@
 export type LocationKey = "raleigh" | "apex" | "durham";
 
+export type Service = {
+  name: string;
+  description: string;
+  tier: "primary" | "secondary" | "addon";
+};
+
+export const services: Service[] = [
+  {
+    name: "Epoxy Garage Floor Installation",
+    description:
+      "Professional epoxy garage floor installation in Raleigh, NC. Durable coatings designed for 1-car and 2-car garages with long-lasting performance and easy maintenance.",
+    tier: "primary",
+  },
+  {
+    name: "Garage Floor Coatings",
+    description:
+      "High-quality garage floor coatings including epoxy, flake, and protective concrete coatings for residential garages.",
+    tier: "primary",
+  },
+  {
+    name: "Polyaspartic Coatings",
+    description:
+      "Zero cracking, peeling, and fading. 1-day application and affordable — set it and forget it. Polyaspartic is faster-curing and more UV-stable than standard epoxy.",
+    tier: "primary",
+  },
+  {
+    name: "Flake Epoxy Garage Floors",
+    description:
+      "Decorative flake epoxy garage floors. Slip-resistant, durable, and ideal for upgrading residential garage spaces with custom color blends.",
+    tier: "secondary",
+  },
+  {
+    name: "Metallic Epoxy Flooring",
+    description:
+      "Metallic epoxy flooring with custom finishes and high-gloss designs. Ideal for garages and modern concrete surfaces.",
+    tier: "secondary",
+  },
+  {
+    name: "Concrete Floor Coatings",
+    description:
+      "Concrete floor coating services including epoxy and protective sealers for garages and residential surfaces.",
+    tier: "secondary",
+  },
+  {
+    name: "Polished Concrete",
+    description:
+      "Polished concrete services for smooth, durable, and low-maintenance concrete floors in homes and commercial spaces.",
+    tier: "secondary",
+  },
+  {
+    name: "2-Car Garage Epoxy Floor",
+    description:
+      "Epoxy flooring for 2-car garages. Designed for durability, easy cleaning, and long-term performance.",
+    tier: "addon",
+  },
+  {
+    name: "Garage Floor Resurfacing",
+    description:
+      "Garage floor resurfacing to repair and upgrade worn or damaged concrete before applying epoxy coatings.",
+    tier: "addon",
+  },
+];
+
+export const polyasparticPoints = [
+  "Zero Cracking, Peeling & Fading",
+  "1-Day Application",
+  "Affordable — Set It & Forget It",
+];
+
+export type GalleryImage = { src: string; alt: string };
+
+export const galleryImages: GalleryImage[] = [
+  { src: "/images/epoxy_floor_01.jpeg", alt: "Epoxy floor installation" },
+  { src: "/images/dark_flakes_epoxy.jpg", alt: "Dark flake epoxy finish" },
+  { src: "/images/person-pouring-epoxy-2.jpeg", alt: "Epoxy coating application in progress" },
+  { src: "/images/2-car-garage-after.jpg", alt: "Garage epoxy floor finished result" },
+  { src: "/images/pro-installer-1943-4.jpeg", alt: "Detailed epoxy installation work" },
+  { src: "/images/person-pouring-epoxy-1.jpeg", alt: "Technician pouring epoxy coating" },
+  { src: "/images/pro-installer-1941-3.jpeg", alt: "Professional installer applying epoxy floor" },
+  { src: "/images/pro-installer-1943-5.jpeg", alt: "Installer finishing epoxy floor coating" },
+  { src: "/images/2-car-garage-after-v2.jpg", alt: "2-car garage epoxy floor after" },
+  { src: "/images/closeup_flakes.jpg", alt: "Close-up of decorative flake epoxy" },
+  { src: "/images/basement_after_epoxy.jpg", alt: "Basement floor after epoxy coating" },
+  { src: "/images/bathroom_epoxy.jpg", alt: "Bathroom epoxy floor finish" },
+  { src: "/images/front_porch_epoxy.jpg", alt: "Front porch concrete coating" },
+  { src: "/images/kitchen_epoxy.jpg", alt: "Kitchen epoxy floor" },
+  { src: "/images/epoxy_walmart_break_room.jpg", alt: "Commercial break room epoxy floor" },
+  { src: "/images/restaurant_after_raleigh_epoxy.jpg", alt: "Restaurant floor epoxy after" },
+  { src: "/images/raleigh_epoxy_walmart_entryway_after.jpg", alt: "Commercial entryway epoxy floor" },
+];
+
 export const links = {
   calendly:
     "https://calendly.com/mammothcoat-info/free-quote-and-surface-assessment",
-  call: "tel:+19199193281",
-  text: "sms:+19199193281",
+  call: "tel:+19199192381",
+  text: "sms:+19199192381",
 };
 
 export const locationKeys: LocationKey[] = ["raleigh", "apex", "durham"];
+
+export type BeforeAfterPair = {
+  before: string;
+  after: string;
+  label: string;
+};
 
 export type LocationContent = {
   key: LocationKey;
@@ -16,8 +113,7 @@ export type LocationContent = {
   seoTitle: string;
   description: string;
   heroImage: string;
-  beforeImage: string;
-  afterImage: string;
+  beforeAfterPairs: BeforeAfterPair[];
   neighborhoods: string[];
 };
 
@@ -25,56 +121,68 @@ export const locations: Record<LocationKey, LocationContent> = {
   raleigh: {
     key: "raleigh",
     city: "Raleigh",
-    title: "Premium Epoxy Flooring and Concrete Coatings in Raleigh, NC",
+    title: "Epoxy Flooring & Concrete Coatings in Raleigh, NC",
     seoTitle: "Raleigh Epoxy Flooring | Mammoth Coatings",
     description:
-      "Mammoth Coatings delivers durable, beautiful epoxy floors and concrete coatings for garages, patios, and commercial spaces across Raleigh.",
+      "Durable, beautiful epoxy floors and concrete coatings for garages, patios, and commercial spaces across Raleigh.",
     heroImage: "/images/raleigh_epoxy.jpg",
-    beforeImage: "/images/raleigh_epoxy_walmart_entryway_before.jpg",
-    afterImage: "/images/raleigh_epoxy_walmart_entryway_after.jpg",
-    neighborhoods: [
-      "North Hills",
-      "Brier Creek",
-      "Five Points",
-      "Wake Forest",
-      "Knightdale",
+    beforeAfterPairs: [
+      {
+        before: "/images/raleigh_epoxy_walmart_entryway_before.jpg",
+        after: "/images/raleigh_epoxy_walmart_entryway_after.jpg",
+        label: "Commercial Entryway",
+      },
+      {
+        before: "/images/restaurant_before_raleigh_epoxy.jpg",
+        after: "/images/restaurant_after_raleigh_epoxy.jpg",
+        label: "Restaurant Floor",
+      },
     ],
+    neighborhoods: ["North Hills", "Brier Creek", "Five Points", "Wake Forest", "Knightdale"],
   },
   apex: {
     key: "apex",
     city: "Apex",
-    title: "Apex Epoxy Garage Floors and Concrete Coatings Built to Last",
+    title: "Epoxy Garage Floors & Concrete Coatings in Apex, NC",
     seoTitle: "Apex Epoxy Flooring | Mammoth Coatings",
     description:
-      "From garage floors to outdoor concrete, Mammoth Coatings helps Apex homeowners and businesses get low-maintenance, high-performance finishes.",
+      "From garage floors to outdoor concrete, we help Apex homeowners get low-maintenance, high-performance finishes.",
     heroImage: "/images/garage_floor_coatoing_raleigh.jpg",
-    beforeImage: "/images/2-car-garage-before-v2.jpg",
-    afterImage: "/images/2-car-garage-after-v2.jpg",
-    neighborhoods: [
-      "Downtown Apex",
-      "Scotts Mill",
-      "Bella Casa",
-      "Friendship",
-      "Holly Springs Border",
+    beforeAfterPairs: [
+      {
+        before: "/images/2-car-garage-before.jpg",
+        after: "/images/2-car-garage-after.jpg",
+        label: "2-Car Garage",
+      },
+      {
+        before: "/images/2-car-garage-before-v2.jpg",
+        after: "/images/2-car-garage-after-v2.jpg",
+        label: "Garage Floor Finish",
+      },
     ],
+    neighborhoods: ["Downtown Apex", "Scotts Mill", "Bella Casa", "Friendship", "Holly Springs"],
   },
   durham: {
     key: "durham",
     city: "Durham",
-    title: "Durham Concrete Coatings and Epoxy Floors for Homes and Facilities",
+    title: "Concrete Coatings & Epoxy Floors in Durham, NC",
     seoTitle: "Durham Epoxy Flooring | Mammoth Coatings",
     description:
-      "Mammoth Coatings installs commercial-grade epoxy and concrete coating systems in Durham with quick turnarounds and clean installs.",
+      "Commercial-grade epoxy and concrete coating systems in Durham with quick turnarounds and clean installs.",
     heroImage: "/images/eopxy_raleigh_nc.png",
-    beforeImage: "/images/restaurant_before_raleigh_epoxy.jpg",
-    afterImage: "/images/restaurant_after_raleigh_epoxy.jpg",
-    neighborhoods: [
-      "Southpoint",
-      "Hope Valley",
-      "Trinity Park",
-      "Research Triangle Park",
-      "Bahama",
+    beforeAfterPairs: [
+      {
+        before: "/images/basement_before_epoxy.jpg",
+        after: "/images/basement_after_epoxy.jpg",
+        label: "Basement Floor",
+      },
+      {
+        before: "/images/restaurant_before_raleigh_epoxy.jpg",
+        after: "/images/restaurant_after_raleigh_epoxy.jpg",
+        label: "Commercial Space",
+      },
     ],
+    neighborhoods: ["Southpoint", "Hope Valley", "Trinity Park", "Research Triangle Park", "Bahama"],
   },
 };
 
@@ -98,3 +206,4 @@ export const testimonials = [
       "We needed a durable commercial coating fast. They delivered exactly what they promised.",
   },
 ];
+
