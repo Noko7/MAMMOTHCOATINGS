@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { HomepageQuoteModal } from "@/components/homepage-quote-modal";
 import { SiteHeader } from "@/components/site-header";
 import { links, locationKeys, locations } from "@/lib/site-data";
 
@@ -33,7 +34,7 @@ export default function Home() {
               Professional epoxy and polyaspartic floor coatings for garages, patios, and commercial spaces across North Carolina.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <a href={links.calendly} className="cta-primary text-base">Get Free Quote</a>
+              <HomepageQuoteModal url={links.calendly} />
               <a href={links.call} className="cta-secondary text-base">Call (919) 919-2381</a>
             </div>
           </div>
