@@ -117,7 +117,8 @@ export const locations: Record<LocationKey, LocationContent> = {
     city: "Raleigh",
     title: "Epoxy Flooring & Concrete Coatings in Raleigh, NC",
     seoTitle: "Raleigh Epoxy Flooring | Mammoth Coatings",
-    description: "Commercial and residential floors",
+    description:
+      "Residential and commercial epoxy floors and concrete coatings for garages, patios, retail spaces, and workspaces across Raleigh.",
     heroImage: "/images/raleigh_epoxy.jpg",
     beforeAfterPairs: [
       {
