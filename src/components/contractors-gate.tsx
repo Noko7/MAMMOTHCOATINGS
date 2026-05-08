@@ -177,8 +177,8 @@ export function ContractorsGate() {
   const d = matData[coat];
   const mat = calcMatCost(coat, sqft);
   const markedUpMat = Math.round(mat.total * (1 + markup / 100));
-  const midPrice = Math.round((d.pricePerSqft.low + d.pricePerSqft.high) / 2);
-  const customerPrice = midPrice * sqft;
+  const laborOverhead = Math.round(d.laborPerSqft * sqft);
+  const customerPrice = markedUpMat + laborOverhead;
   const yourPct = phase === "1" ? 0.25 : 0.2;
   const yourFee = Math.round(customerPrice * yourPct);
   const deposit = Math.round(customerPrice * 0.5);
@@ -464,7 +464,7 @@ export function ContractorsGate() {
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
               <span>Labor + overhead</span>
-              <span className="font-semibold text-ivory">{fmt(customerPrice - markedUpMat)}</span>
+              <span className="font-semibold text-ivory">{fmt(laborOverhead)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-t border-white/10 pt-2">
               <span className="font-semibold">Total customer quote ({sqft} sqft x {fmt2(customerPrice / sqft)})</span>
