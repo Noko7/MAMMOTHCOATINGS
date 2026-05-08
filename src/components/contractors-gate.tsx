@@ -306,7 +306,7 @@ export function ContractorsGate() {
 
       <div className="mb-6 rounded-3xl border border-blue-accent/30 bg-blue-accent/10 p-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">Internal Use</p>
-        <h1 className="mt-2 font-headline text-5xl text-ivory">MammothCoat Job Cost Calculator</h1>
+        <h1 className="mt-2 font-headline text-4xl text-ivory md:text-5xl">MammothCoat Job Cost Calculator</h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
           Start with square footage - everything else calculates from real XPS/Rockhard material costs.
         </p>
@@ -433,7 +433,7 @@ export function ContractorsGate() {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Material Cost Breakdown</h2>
+          <h2 className="font-headline text-2xl text-ivory md:text-3xl">Material Cost Breakdown</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             {mat.details.map((m) => (
               <div key={`${m.name}-${m.note}`} className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
@@ -456,7 +456,7 @@ export function ContractorsGate() {
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Quote Built For Customer</h2>
+          <h2 className="font-headline text-2xl text-ivory md:text-3xl">Quote Built For Customer</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
               <span>Materials (marked up {markup}%)</span>
@@ -474,7 +474,7 @@ export function ContractorsGate() {
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Payment Flow (50% Deposit)</h2>
+          <h2 className="font-headline text-2xl text-ivory md:text-3xl">Payment Flow (50% Deposit)</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
               <span>Customer deposit (50%)</span>
@@ -500,7 +500,7 @@ export function ContractorsGate() {
       </div>
 
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
-        <h2 className="font-headline text-3xl text-ivory">Contractor Take-Home</h2>
+        <h2 className="font-headline text-2xl text-ivory md:text-3xl">Contractor Take-Home</h2>
         <div className="mt-4 space-y-3 text-sm text-slate-300">
           <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
             <span>Contractor gross (quote minus your {Math.round(yourPct * 100)}%)</span>
@@ -526,7 +526,7 @@ export function ContractorsGate() {
       </div>
 
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-5">
-        <h2 className="font-headline text-3xl text-ivory">Per-square-foot Pricing Guide (What To Quote Customers)</h2>
+        <h2 className="font-headline text-2xl text-ivory md:text-3xl">Per-square-foot Pricing Guide (What To Quote Customers)</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {ppsfTypes.map((item) => {
             const dd = matData[item.key];
