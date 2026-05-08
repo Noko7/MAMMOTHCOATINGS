@@ -37,8 +37,8 @@ export default function Home() {
               <CalendlyModalTrigger
                 url={links.calendly}
                 buttonLabel="Get Free Quote"
-                title="Schedule Your Free Surface Assessment"
-                description="Pick a time that works for you and stay right here on the site while you book."
+                title="Get Your Free Quote"
+                description="Pick a time that works for you. We review your project and give clear pricing with no pressure."
                 className="cta-primary text-base"
               />
               <a href={links.call} className="cta-secondary text-base">Call (919) 919-2381</a>

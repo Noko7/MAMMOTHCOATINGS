@@ -56,7 +56,7 @@ export function SiteHeader({ activeLocation }: SiteHeaderProps) {
               url={links.installationCalendly}
               buttonLabel="Installation Appointment"
               title="Schedule Your Installation Appointment"
-              description="Choose your install scheduling slot without leaving the site."
+              description="Pick a time that works for you. We will confirm install timing and keep everything moving without sending you off-site."
               className="cta-secondary cta-sm"
             />
           ) : null}
@@ -110,7 +110,7 @@ export function SiteHeader({ activeLocation }: SiteHeaderProps) {
                 url={links.installationCalendly}
                 buttonLabel="Installation Appointment"
                 title="Schedule Your Installation Appointment"
-                description="Choose your install scheduling slot without leaving the site."
+                description="Pick a time that works for you. We will confirm install timing and keep everything moving without sending you off-site."
                 className="cta-secondary"
                 onOpen={() => setMenuOpen(false)}
               />

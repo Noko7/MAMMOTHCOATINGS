@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { CalendlyInline } from "@/components/calendly-inline";
+import { links } from "@/lib/site-data";
 
 type CalendlyModalTriggerProps = {
   url: string;
@@ -67,12 +68,12 @@ export function CalendlyModalTrigger({
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-3xl border border-white/10 bg-[#14161b] p-4 shadow-2xl md:p-6"
+            className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-3xl border border-white/10 bg-ivory p-6 text-[#2b1a12] shadow-2xl md:p-10"
             onClick={(event) => event.stopPropagation()}
           >
             <button
               type="button"
-              className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xl text-ivory transition hover:bg-white/10"
+              className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-[#2b1a12]/15 bg-[#2b1a12]/5 text-xl text-[#2b1a12] transition hover:bg-[#2b1a12]/10"
               aria-label="Close modal"
               onClick={() => setIsOpen(false)}
             >
@@ -83,10 +84,19 @@ export function CalendlyModalTrigger({
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-accent">
                 Mammoth Coatings
               </p>
-              <h2 className="mt-2 font-headline text-4xl text-ivory md:text-5xl">{title}</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
+              <h2 className="mt-2 font-headline text-4xl text-[#2b1a12] md:text-5xl">{title}</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#2b1a12]/80 md:text-base">
                 {description}
               </p>
+            </div>
+
+            <div className="mb-6 flex flex-wrap gap-2">
+              <a href={links.call} className="rounded-full bg-[#2b1a12] px-5 py-2.5 text-sm font-bold text-white">
+                Call Now
+              </a>
+              <a href={links.text} className="rounded-full border-2 border-[#2b1a12] px-5 py-2.5 text-sm font-bold text-[#2b1a12]">
+                Text Now
+              </a>
             </div>
 
             <CalendlyInline url={url} />
