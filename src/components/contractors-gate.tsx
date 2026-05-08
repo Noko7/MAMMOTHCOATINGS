@@ -7,23 +7,6 @@ const STORAGE_KEY = "mammoth-contractors-unlocked";
 
 type Phase = "1" | "2";
 
-type MaterialCost = {
-  id: string;
-  label: string;
-  cost: number;
-  note: string;
-  isBase?: boolean;
-};
-
-const matCosts: MaterialCost[] = [
-  { id: "base", label: "Epoxy base coat (Rockhard USA 3 gal)", cost: 185, note: "1-2 kits depending on sqft", isBase: true },
-  { id: "pigment", label: "Pigment (solid color)", cost: 45, note: "500ml" },
-  { id: "flakes", label: "Flake chips (Torginol)", cost: 138, note: "1 box covers ~400sqft" },
-  { id: "topcoat", label: "Polyaspartic topcoat (Rockhard Poly 2 gal)", cost: 240, note: "1 kit" },
-  { id: "tools", label: "Roller, squeegee, spike shoes", cost: 75, note: "consumables per job" },
-  { id: "grinding", label: "Diamond grinding pads (wear)", cost: 50, note: "per job estimate" },
-];
-
 function fmt(n: number) {
   return `$${Math.round(n).toLocaleString()}`;
 }
@@ -34,8 +17,8 @@ export function ContractorsGate() {
     () => typeof window !== "undefined" && window.sessionStorage.getItem(STORAGE_KEY) === "true"
   );
   const [error, setError] = useState("");
-  const [price, setPrice] = useState(2500);
-  const [depositPct, setDepositPct] = useState(50);
+  const [price, setPrice] = useState(2800);
+  const [markup, setMarkup] = useState(75);
   const [phase, setPhase] = useState<Phase>("1");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -85,38 +68,33 @@ export function ContractorsGate() {
     );
   }
 
-  const deposit = (price * depositPct) / 100;
-  const yourFee = phase === "1" ? 500 : price * 0.2;
-  const depToContractor = deposit - yourFee;
-  const finalToContractor = price - deposit;
-  const contractorTotal = price - yourFee;
+  const baseMat = 730;
+  const markedUpMat = Math.round(baseMat * (1 + markup / 100));
+  const laborInQuote = price - markedUpMat;
+  const yourFee = phase === "1" ? 500 : Math.round(price * 0.2);
+  const deposit = Math.round(price * 0.5);
+  const depAfterFee = deposit - yourFee;
+  const finalPay = price - deposit;
+  const contractorGross = price - yourFee;
+  const contractorNet = contractorGross - baseMat;
+  const hours = price > 3500 ? 12 : price > 2500 ? 10 : 7;
+  const hourly = Math.round(contractorNet / hours);
 
-  const sqft = Math.round(price / 5.5);
-  const kitsNeeded = sqft > 350 ? 2 : 1;
-  const totalMat = matCosts.reduce((sum, item) => {
-    if (item.isBase) {
-      return sum + item.cost * kitsNeeded;
-    }
-    return sum + item.cost;
-  }, 0);
-
-  const contractorProfit = contractorTotal - totalMat;
-  const laborEst = contractorProfit;
-  const hoursEst = sqft > 350 ? 10 : 7;
-  const hourlyRate = Math.round(laborEst / hoursEst);
-  const depositCoversMaterials = depToContractor >= totalMat;
+  const friendRev = price;
+  const friendCut70 = Math.round(friendRev * 0.7);
+  const friendCut60 = Math.round(friendRev * 0.6);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:px-8">
-      <h2 className="sr-only">Interactive cost model calculator for MammothCoat epoxy flooring drop service</h2>
+      <h2 className="sr-only">Updated MammothCoat cost model with 50-100% material markup built into job pricing</h2>
 
       <div className="mb-8 rounded-3xl border border-blue-accent/30 bg-blue-accent/10 p-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">
           Internal Use
         </p>
-        <h1 className="mt-2 font-headline text-5xl text-ivory">MammothCoat Cost Model Calculator</h1>
+        <h1 className="mt-2 font-headline text-5xl text-ivory">Updated Cost Model With Material Markup</h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
-          Adjust the job price and see how the money splits - using real XPS material costs.
+          The customer quote includes materials at 50-100% markup - here is how that changes everything.
         </p>
       </div>
 
@@ -126,7 +104,7 @@ export function ContractorsGate() {
           <input
             id="job-price"
             type="range"
-            min={1200}
+            min={1500}
             max={8000}
             step={100}
             value={price}
@@ -137,18 +115,18 @@ export function ContractorsGate() {
         </div>
 
         <div>
-          <label htmlFor="deposit-pct" className="mb-2 block text-sm font-semibold text-slate-300">Deposit %</label>
+          <label htmlFor="material-markup" className="mb-2 block text-sm font-semibold text-slate-300">Material markup</label>
           <input
-            id="deposit-pct"
+            id="material-markup"
             type="range"
-            min={30}
-            max={60}
+            min={50}
+            max={100}
             step={5}
-            value={depositPct}
-            onChange={(event) => setDepositPct(Number(event.target.value))}
+            value={markup}
+            onChange={(event) => setMarkup(Number(event.target.value))}
             className="w-full"
           />
-          <p className="mt-2 text-lg font-semibold text-ivory">{depositPct}%</p>
+          <p className="mt-2 text-lg font-semibold text-ivory">{markup}%</p>
         </div>
 
         <div>
@@ -169,97 +147,122 @@ export function ContractorsGate() {
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Your Take</p>
           <p className="mt-2 text-3xl font-bold text-ivory">{fmt(yourFee)}</p>
-          <p className="mt-1 text-xs text-slate-400">{phase === "1" ? "flat fee" : `${Math.round((yourFee / price) * 100)}% of job`}</p>
+          <p className="mt-1 text-xs text-slate-400">{phase === "1" ? "flat fee" : `20% of ${fmt(price)}`}</p>
         </article>
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Contractor Total</p>
-          <p className="mt-2 text-3xl font-bold text-ivory">{fmt(contractorTotal)}</p>
-          <p className="mt-1 text-xs text-slate-400">before materials</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Material Markup Profit</p>
+          <p className="mt-2 text-3xl font-bold text-ivory">{fmt(markedUpMat - baseMat)}</p>
+          <p className="mt-1 text-xs text-slate-400">goes to contractor</p>
         </article>
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Est. Material Cost</p>
-          <p className="mt-2 text-3xl font-bold text-ivory">{fmt(totalMat)}</p>
-          <p className="mt-1 text-xs text-slate-400">~{sqft} sqft estimate</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Contractor Net</p>
+          <p className={`mt-2 text-3xl font-bold ${contractorNet >= 0 ? "text-emerald-300" : "text-red-300"}`}>{fmt(contractorNet)}</p>
+          <p className="mt-1 text-xs text-slate-400">~{fmt(hourly)}/hr</p>
         </article>
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Contractor Profit</p>
-          <p className={`mt-2 text-3xl font-bold ${contractorProfit >= 0 ? "text-emerald-300" : "text-red-300"}`}>
-            {fmt(contractorProfit)}
-          </p>
-          <p className="mt-1 text-xs text-slate-400">after materials</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Customer Pays</p>
+          <p className="mt-2 text-3xl font-bold text-ivory">{fmt(price)}</p>
+          <p className="mt-1 text-xs text-slate-400">total quoted price</p>
         </article>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Payment Flow</h2>
+          <h2 className="font-headline text-3xl text-ivory">How The Quote Is Built</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Customer deposit ({depositPct}%)</span>
+              <span>Raw material cost (your cost from XPS)</span>
+              <span className="font-semibold text-ivory">{fmt(baseMat)}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
+              <span>Materials quoted to customer ({markup}% markup)</span>
+              <span className="font-semibold text-ivory">{fmt(markedUpMat)}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
+              <span>Labor portion of quote</span>
+              <span className="font-semibold text-ivory">{fmt(laborInQuote)}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3 pb-1">
+              <span>Total customer quote</span>
+              <span className="font-semibold text-ivory">{fmt(price)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
+          <h2 className="font-headline text-3xl text-ivory">How The Money Flows</h2>
+          <div className="mt-4 space-y-3 text-sm text-slate-300">
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
+              <span>Customer deposit (50%)</span>
               <span className="font-semibold text-ivory">{fmt(deposit)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Your fee deducted</span>
+              <span>Your referral fee deducted</span>
               <span className="font-semibold text-emerald-300">-{fmt(yourFee)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
               <span>Deposit remainder to contractor</span>
-              <span className="font-semibold text-ivory">{fmt(depToContractor)}</span>
+              <span className="font-semibold text-ivory">{fmt(depAfterFee)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 pb-1">
               <span>Final payment at completion</span>
-              <span className="font-semibold text-ivory">{fmt(finalToContractor)}</span>
+              <span className="font-semibold text-ivory">{fmt(finalPay)}</span>
             </div>
-            <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${depositCoversMaterials ? "bg-emerald-950/40 text-emerald-200" : "bg-red-950/40 text-red-200"}`}>
-              {depositCoversMaterials ? "Covers materials" : "Below material cost"}
+            <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${depAfterFee >= baseMat ? "bg-blue-950/40 text-blue-200" : "bg-red-950/40 text-red-200"}`}>
+              {depAfterFee >= baseMat ? "covers materials" : "below mat. cost"}
             </p>
           </div>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Material Costs</h2>
-          <div className="mt-4 space-y-3 text-sm text-slate-300">
-            {matCosts.map((item) => {
-              const cost = item.isBase ? item.cost * kitsNeeded : item.cost;
-              return (
-                <div key={item.id} className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-                  <div>
-                    <p>{item.label}{item.isBase && kitsNeeded > 1 ? " x2" : ""}</p>
-                    <p className="text-xs text-slate-400">{item.note}</p>
-                  </div>
-                  <span className="font-semibold text-ivory">{fmt(cost)}</span>
-                </div>
-              );
-            })}
-            <div className="flex items-start justify-between gap-3 pt-2 text-base font-semibold text-ivory">
-              <span>Total estimated materials</span>
-              <span>{fmt(totalMat)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5 lg:col-span-1">
-          <h2 className="font-headline text-3xl text-ivory">Contractor Analysis</h2>
+          <h2 className="font-headline text-3xl text-ivory">Contractor Take-Home</h2>
           <div className="mt-4 space-y-3 text-sm text-slate-300">
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Contractor gross from job</span>
-              <span className="font-semibold text-ivory">{fmt(contractorTotal)}</span>
+              <span>Contractor gross (job price minus your fee)</span>
+              <span className="font-semibold text-ivory">{fmt(contractorGross)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Minus materials</span>
-              <span className="font-semibold text-red-300">-{fmt(totalMat)}</span>
+              <span>Minus actual material cost</span>
+              <span className="font-semibold text-red-300">-{fmt(baseMat)}</span>
+            </div>
+            <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
+              <span>Contractor keeps the markup spread</span>
+              <span className="font-semibold text-emerald-300">+{fmt(markedUpMat - baseMat)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
               <span>Contractor net profit</span>
-              <span className={`font-semibold ${contractorProfit >= 0 ? "text-emerald-300" : "text-red-300"}`}>{fmt(contractorProfit)}</span>
-            </div>
-            <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Est. labor hours ({sqft > 350 ? "2-day" : "1-day"} job)</span>
-              <span className="font-semibold text-ivory">~{hoursEst} hrs</span>
+              <span className={`font-semibold ${contractorNet >= 0 ? "text-emerald-300" : "text-red-300"}`}>{fmt(contractorNet)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 pt-1">
-              <span>Effective hourly rate</span>
-              <span className={`font-semibold ${hourlyRate > 50 ? "text-emerald-300" : "text-red-300"}`}>${hourlyRate}/hr</span>
+              <span>Estimated hours (~{hours} hrs)</span>
+              <span className={`font-semibold ${hourly > 50 ? "text-emerald-300" : hourly > 30 ? "text-amber-300" : "text-red-300"}`}>{fmt(hourly)}/hr effective</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 p-5">
+        <h2 className="font-headline text-3xl text-ivory">Side-by-side: your friend&apos;s model vs yours</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Pressure Washing Pride</p>
+            <div className="space-y-2">
+              <div className="flex justify-between gap-3"><span>Jobs 1-5: contractor keeps 60%</span><span className="font-semibold text-ivory">{fmt(friendCut60)}</span></div>
+              <div className="flex justify-between gap-3"><span>Jobs 6+: contractor keeps 70%</span><span className="font-semibold text-ivory">{fmt(friendCut70)}</span></div>
+              <div className="flex justify-between gap-3"><span>Owner takes (jobs 6+)</span><span className="font-semibold text-ivory">{fmt(friendRev - friendCut70)}</span></div>
+              <div className="flex justify-between gap-3 text-slate-400"><span>Insurance required?</span><span>No (encouraged)</span></div>
+              <div className="flex justify-between gap-3 text-slate-400"><span>Materials paid by</span><span>Contractor</span></div>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">MammothCoat (yours)</p>
+            <div className="space-y-2">
+              <div className="flex justify-between gap-3"><span>Jobs 1-5: you get flat</span><span className="font-semibold text-ivory">$500</span></div>
+              <div className="flex justify-between gap-3"><span>Jobs 6+: you get 20%</span><span className="font-semibold text-ivory">{fmt(yourFee)}</span></div>
+              <div className="flex justify-between gap-3"><span>Contractor net profit</span><span className="font-semibold text-ivory">{fmt(contractorNet)}</span></div>
+              <div className="flex justify-between gap-3 text-slate-400"><span>Insurance required?</span><span>No (encouraged)</span></div>
+              <div className="flex justify-between gap-3 text-slate-400"><span>Materials paid by</span><span>Contractor (from deposit)</span></div>
             </div>
           </div>
         </div>
