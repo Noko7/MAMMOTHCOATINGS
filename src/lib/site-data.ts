@@ -128,6 +128,16 @@ export const locations: Record<LocationKey, LocationContent> = {
     heroImage: "/images/raleigh_epoxy.jpg",
     beforeAfterPairs: [
       {
+        before: "/images/epoxy_flooring_before_100.jpeg",
+        after: "/images/epoxy_flooring_after_100.jpeg",
+        label: "Epoxy Floor Upgrade 100",
+      },
+      {
+        before: "/images/epoxy_flooring_before_200.jpeg",
+        after: "/images/epoxy_flooring_after_200.jpeg",
+        label: "Epoxy Floor Upgrade 200",
+      },
+      {
         before: "/images/raleigh_epoxy_walmart_entryway_before.jpg",
         after: "/images/raleigh_epoxy_walmart_entryway_after.jpg",
         label: "Commercial Entryway",
