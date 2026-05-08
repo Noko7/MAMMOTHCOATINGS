@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { HomepageQuoteModal } from "@/components/homepage-quote-modal";
+import { CalendlyModalTrigger } from "@/components/calendly-modal-trigger";
 import { SiteHeader } from "@/components/site-header";
 import { links, locationKeys, locations } from "@/lib/site-data";
 
@@ -34,7 +34,13 @@ export default function Home() {
               Professional epoxy and polyaspartic floor coatings for garages, patios, and commercial spaces across North Carolina.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
-              <HomepageQuoteModal url={links.calendly} />
+              <CalendlyModalTrigger
+                url={links.calendly}
+                buttonLabel="Get Free Quote"
+                title="Schedule Your Free Surface Assessment"
+                description="Pick a time that works for you and stay right here on the site while you book."
+                className="cta-primary text-base"
+              />
               <a href={links.call} className="cta-secondary text-base">Call (919) 919-2381</a>
             </div>
           </div>

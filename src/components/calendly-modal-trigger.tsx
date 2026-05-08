@@ -4,11 +4,23 @@ import { useEffect, useState } from "react";
 
 import { CalendlyInline } from "@/components/calendly-inline";
 
-type HomepageQuoteModalProps = {
+type CalendlyModalTriggerProps = {
   url: string;
+  buttonLabel: string;
+  title: string;
+  description: string;
+  className?: string;
+  onOpen?: () => void;
 };
 
-export function HomepageQuoteModal({ url }: HomepageQuoteModalProps) {
+export function CalendlyModalTrigger({
+  url,
+  buttonLabel,
+  title,
+  description,
+  className,
+  onOpen,
+}: CalendlyModalTriggerProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -35,8 +47,15 @@ export function HomepageQuoteModal({ url }: HomepageQuoteModalProps) {
 
   return (
     <>
-      <button type="button" className="cta-primary text-base" onClick={() => setIsOpen(true)}>
-        Get Free Quote
+      <button
+        type="button"
+        className={className}
+        onClick={() => {
+          onOpen?.();
+          setIsOpen(true);
+        }}
+      >
+        {buttonLabel}
       </button>
 
       {isOpen && (
@@ -44,7 +63,7 @@ export function HomepageQuoteModal({ url }: HomepageQuoteModalProps) {
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Schedule your free quote"
+          aria-label={title}
           onClick={() => setIsOpen(false)}
         >
           <div
@@ -54,7 +73,7 @@ export function HomepageQuoteModal({ url }: HomepageQuoteModalProps) {
             <button
               type="button"
               className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-xl text-ivory transition hover:bg-white/10"
-              aria-label="Close quote modal"
+              aria-label="Close modal"
               onClick={() => setIsOpen(false)}
             >
               ×
@@ -62,13 +81,11 @@ export function HomepageQuoteModal({ url }: HomepageQuoteModalProps) {
 
             <div className="mb-5 pr-12 text-left">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-accent">
-                Free Quote
+                Mammoth Coatings
               </p>
-              <h2 className="mt-2 font-headline text-4xl text-ivory md:text-5xl">
-                Schedule Your Free Surface Assessment
-              </h2>
+              <h2 className="mt-2 font-headline text-4xl text-ivory md:text-5xl">{title}</h2>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-                Pick a time that works for you and stay right here on the site while you book.
+                {description}
               </p>
             </div>
 

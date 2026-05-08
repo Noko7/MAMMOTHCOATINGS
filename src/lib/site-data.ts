@@ -88,6 +88,8 @@ export const galleryImages: GalleryImage[] = [
 export const links = {
   calendly:
     "https://calendly.com/mammothcoat-info/free-quote-and-surface-assessment",
+  installationCalendly:
+    "https://calendly.com/mammothcoat-info/installation-scheduling",
   call: "tel:+19199192381",
   text: "sms:+19199192381",
 };
