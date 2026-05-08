@@ -24,9 +24,9 @@ export const metadata: Metadata = {
     "Mammoth Coatings provides high-performance epoxy flooring and concrete coatings in Raleigh, Apex, and Durham.",
   metadataBase: new URL("https://mammothcoat.com"),
   icons: {
-    icon: "/images/Logo/link_preview.png",
-    shortcut: "/images/Logo/link_preview.png",
-    apple: "/images/Logo/link_preview.png",
+    icon: "/images/Logo/Mammoth_Coatings.png",
+    shortcut: "/images/Logo/Mammoth_Coatings.png",
+    apple: "/images/Logo/Mammoth_Coatings.png",
   },
   openGraph: {
     title: "Mammoth Coatings",

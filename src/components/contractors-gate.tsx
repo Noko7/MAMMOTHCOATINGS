@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
-
-const CONTRACTOR_PASSWORD = "EpoxyFlooring";
-const STORAGE_KEY = "mammoth-contractors-unlocked";
+import { useEffect, useState } from "react";
 
 type Phase = "1" | "2";
 type CoatType = "flake" | "solid" | "metallic" | "polished";
@@ -102,11 +99,23 @@ function fmt2(n: number) {
   return `$${n.toFixed(2)}`;
 }
 
+function downloadBlob(filename: string, blob: Blob) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
+
 export function ContractorsGate() {
   const [password, setPassword] = useState("");
-  const [isUnlocked, setIsUnlocked] = useState(
-    () => typeof window !== "undefined" && window.sessionStorage.getItem(STORAGE_KEY) === "true"
-  );
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [isAuthCheckLoading, setIsAuthCheckLoading] = useState(true);
+  const [isUnlocking, setIsUnlocking] = useState(false);
+  const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
   const [error, setError] = useState("");
   const [sqft, setSqft] = useState(450);
   const [coat, setCoat] = useState<CoatType>("flake");
@@ -114,52 +123,56 @@ export function ContractorsGate() {
   const [phase, setPhase] = useState<Phase>("1");
   const [activePreset, setActivePreset] = useState<string>("2-car garage");
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    let mounted = true;
+
+    const checkAuth = async () => {
+      try {
+        const res = await fetch("/api/contractors/auth/status", { method: "GET", cache: "no-store" });
+        if (mounted && res.ok) {
+          setIsUnlocked(true);
+        }
+      } finally {
+        if (mounted) {
+          setIsAuthCheckLoading(false);
+        }
+      }
+    };
+
+    checkAuth();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError("");
+    setIsUnlocking(true);
 
-    if (password === CONTRACTOR_PASSWORD) {
-      window.sessionStorage.setItem(STORAGE_KEY, "true");
+    try {
+      const res = await fetch("/api/contractors/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (!res.ok) {
+        setError("Incorrect password.");
+        return;
+      }
+
       setIsUnlocked(true);
-      setError("");
-      return;
+      setPassword("");
+    } catch {
+      setError("Unable to verify password right now.");
+    } finally {
+      setIsUnlocking(false);
     }
-
-    setError("Incorrect password.");
   };
-
-  if (!isUnlocked) {
-    return (
-      <section className="mx-auto max-w-xl px-4 py-20 md:px-8">
-        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">
-            Contractors Only
-          </p>
-          <h1 className="mt-3 font-headline text-5xl text-ivory">Private Pricing Access</h1>
-          <p className="mt-4 text-sm leading-relaxed text-slate-300">
-            Enter the contractor password to view the internal pricing sheet and install notes.
-          </p>
-
-          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-            <label className="block text-sm font-semibold text-ivory" htmlFor="contractor-password">
-              Password
-            </label>
-            <input
-              id="contractor-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-ivory outline-none transition focus:border-blue-accent"
-              placeholder="Enter password"
-            />
-            {error ? <p className="text-sm font-semibold text-red-300">{error}</p> : null}
-            <button type="submit" className="cta-primary text-base">
-              Unlock Pricing Page
-            </button>
-          </form>
-        </div>
-      </section>
-    );
-  }
 
   const d = matData[coat];
   const mat = calcMatCost(coat, sqft);
@@ -184,19 +197,136 @@ export function ContractorsGate() {
     { key: "polished", label: "Polished concrete" },
   ];
 
+  const handleGenerateQuotePackage = async () => {
+    setIsGeneratingQuote(true);
+    setError("");
+
+    try {
+      const quotePayload = {
+        sqft,
+        coat,
+        markup,
+        phaseLabel: phase === "1" ? "Jobs 1-5 (25%)" : "Jobs 6+ (20%)",
+        customerQuote: customerPrice,
+        mammothCut: yourFee,
+        materialCost: mat.total,
+        contractorNet,
+        deposit,
+        finalPayment: finalPay,
+        generatedAt: new Date().toISOString(),
+      };
+
+      const quoteRes = await fetch("/api/contractors/generate-quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(quotePayload),
+      });
+
+      if (!quoteRes.ok) {
+        throw new Error("quote_failed");
+      }
+
+      const quoteBlob = await quoteRes.blob();
+      downloadBlob("mammothcoat-quote.txt", quoteBlob);
+
+      const agreementRes = await fetch("/api/contractors/customer-agreement", { method: "GET" });
+      if (!agreementRes.ok) {
+        throw new Error("agreement_failed");
+      }
+
+      const agreementBlob = await agreementRes.blob();
+      downloadBlob("MammothCoat_Customer_Agreement.docx", agreementBlob);
+    } catch {
+      setError("Unable to generate quote package. Please re-enter contractors page and try again.");
+    } finally {
+      setIsGeneratingQuote(false);
+    }
+  };
+
+  const handleDownloadAgreementOnly = async () => {
+    setError("");
+
+    try {
+      const agreementRes = await fetch("/api/contractors/customer-agreement", { method: "GET" });
+      if (!agreementRes.ok) {
+        throw new Error("agreement_failed");
+      }
+      const agreementBlob = await agreementRes.blob();
+      downloadBlob("MammothCoat_Customer_Agreement.docx", agreementBlob);
+    } catch {
+      setError("Unable to download agreement. Please re-enter contractors page and try again.");
+    }
+  };
+
+  if (isAuthCheckLoading) {
+    return (
+      <section className="mx-auto max-w-xl px-4 py-20 md:px-8">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8">
+          <p className="text-sm text-slate-300">Checking contractor access...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!isUnlocked) {
+    return (
+      <section className="mx-auto max-w-xl px-4 py-20 md:px-8">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-black/40">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">Contractors Only</p>
+          <h1 className="mt-3 font-headline text-5xl text-ivory">Private Pricing Access</h1>
+          <p className="mt-4 text-sm leading-relaxed text-slate-300">
+            Enter the contractor password to view the internal pricing sheet and generate quote packages.
+          </p>
+
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+            <label className="block text-sm font-semibold text-ivory" htmlFor="contractor-password">
+              Password
+            </label>
+            <input
+              id="contractor-password"
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="w-full rounded-2xl border border-white/15 bg-black/30 px-4 py-3 text-ivory outline-none transition focus:border-blue-accent"
+              placeholder="Enter password"
+            />
+            {error ? <p className="text-sm font-semibold text-red-300">{error}</p> : null}
+            <button type="submit" className="cta-primary text-base" disabled={isUnlocking}>
+              {isUnlocking ? "Unlocking..." : "Unlock Pricing Page"}
+            </button>
+          </form>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:px-8">
       <h2 className="sr-only">MammothCoat epoxy flooring cost calculator based on square footage with real XPS material pricing</h2>
 
-      <div className="mb-8 rounded-3xl border border-blue-accent/30 bg-blue-accent/10 p-6">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">
-          Internal Use
-        </p>
+      <div className="mb-6 rounded-3xl border border-blue-accent/30 bg-blue-accent/10 p-6">
+        <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">Internal Use</p>
         <h1 className="mt-2 font-headline text-5xl text-ivory">MammothCoat Job Cost Calculator</h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
           Start with square footage - everything else calculates from real XPS/Rockhard material costs.
         </p>
       </div>
+
+      <div className="mb-8 flex flex-wrap gap-3">
+        <button
+          type="button"
+          className="cta-primary"
+          disabled={isGeneratingQuote}
+          onClick={handleGenerateQuotePackage}
+        >
+          {isGeneratingQuote ? "Generating Quote Package..." : "Generate Quote + Agreement"}
+        </button>
+        <button type="button" onClick={handleDownloadAgreementOnly} className="cta-secondary">
+          Download Agreement Only
+        </button>
+      </div>
+
+      {error ? <p className="mb-6 text-sm font-semibold text-red-300">{error}</p> : null}
 
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Quick Presets</p>
       <div className="mb-6 flex flex-wrap gap-2">
@@ -215,7 +345,7 @@ export function ContractorsGate() {
         ))}
       </div>
 
-      <div className="mb-6 grid gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 md:grid-cols-3">
+      <div className="mb-6 grid gap-4 rounded-3xl border border-white/10 bg-white/5 p-6 sm:grid-cols-2 xl:grid-cols-4">
         <div>
           <label htmlFor="sqft" className="mb-2 block text-sm font-semibold text-slate-300">Square feet</label>
           <input
@@ -278,7 +408,7 @@ export function ContractorsGate() {
         </div>
       </div>
 
-      <div className="mb-6 grid gap-4 md:grid-cols-4">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <article className="rounded-2xl border border-white/10 bg-black/25 p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.15em] text-slate-400">Customer Quote</p>
           <p className="mt-2 text-3xl font-bold text-ivory">{fmt(customerPrice)}</p>
@@ -351,7 +481,7 @@ export function ContractorsGate() {
               <span className="font-semibold text-ivory">{fmt(deposit)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Your referral fee ({Math.round(yourPct * 100)}%)</span>
+              <span>Mammoth Coat&apos;s referral fee ({Math.round(yourPct * 100)}%)</span>
               <span className="font-semibold text-emerald-300">-{fmt(yourFee)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
@@ -397,7 +527,7 @@ export function ContractorsGate() {
 
       <div className="mt-4 rounded-2xl border border-white/10 bg-white/5 p-5">
         <h2 className="font-headline text-3xl text-ivory">Per-square-foot Pricing Guide (What To Quote Customers)</h2>
-        <div className="mt-4 grid gap-3 md:grid-cols-4">
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {ppsfTypes.map((item) => {
             const dd = matData[item.key];
             const low = dd.pricePerSqft.low * sqft;
