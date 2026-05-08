@@ -8,7 +8,7 @@ const STORAGE_KEY = "mammoth-contractors-unlocked";
 type Phase = "1" | "2";
 
 type MaterialCost = {
-  key: string;
+  id: string;
   label: string;
   cost: number;
   note: string;
@@ -16,12 +16,12 @@ type MaterialCost = {
 };
 
 const matCosts: MaterialCost[] = [
-  { key: "base", label: "Epoxy base coat (Rockhard USA 3 gal)", cost: 185, note: "1-2 kits depending on sqft", isBase: true },
-  { key: "pigment", label: "Pigment (solid color)", cost: 45, note: "500ml" },
-  { key: "flakes", label: "Flake chips (Torginol)", cost: 138, note: "1 box covers ~400sqft" },
-  { key: "topcoat", label: "Polyaspartic topcoat (Rockhard Poly 2 gal)", cost: 240, note: "1 kit" },
-  { key: "tools", label: "Roller, squeegee, spike shoes", cost: 75, note: "consumables per job" },
-  { key: "grinding", label: "Diamond grinding pads (wear)", cost: 50, note: "per job estimate" },
+  { id: "base", label: "Epoxy base coat (Rockhard USA 3 gal)", cost: 185, note: "1-2 kits depending on sqft", isBase: true },
+  { id: "pigment", label: "Pigment (solid color)", cost: 45, note: "500ml" },
+  { id: "flakes", label: "Flake chips (Torginol)", cost: 138, note: "1 box covers ~400sqft" },
+  { id: "topcoat", label: "Polyaspartic topcoat (Rockhard Poly 2 gal)", cost: 240, note: "1 kit" },
+  { id: "tools", label: "Roller, squeegee, spike shoes", cost: 75, note: "consumables per job" },
+  { id: "grinding", label: "Diamond grinding pads (wear)", cost: 50, note: "per job estimate" },
 ];
 
 function fmt(n: number) {
@@ -101,19 +101,22 @@ export function ContractorsGate() {
   }, 0);
 
   const contractorProfit = contractorTotal - totalMat;
+  const laborEst = contractorProfit;
   const hoursEst = sqft > 350 ? 10 : 7;
-  const hourlyRate = Math.round(contractorProfit / hoursEst);
+  const hourlyRate = Math.round(laborEst / hoursEst);
   const depositCoversMaterials = depToContractor >= totalMat;
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:px-8">
+      <h2 className="sr-only">Interactive cost model calculator for MammothCoat epoxy flooring drop service</h2>
+
       <div className="mb-8 rounded-3xl border border-blue-accent/30 bg-blue-accent/10 p-6">
         <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-accent">
           Internal Use
         </p>
         <h1 className="mt-2 font-headline text-5xl text-ivory">MammothCoat Cost Model Calculator</h1>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-300">
-          Adjust the job price and see how the money splits using your cost model and real XPS material assumptions.
+          Adjust the job price and see how the money splits - using real XPS material costs.
         </p>
       </div>
 
@@ -204,11 +207,11 @@ export function ContractorsGate() {
               <span className="font-semibold text-ivory">{fmt(depToContractor)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 pb-1">
-              <span>Final payment on completion</span>
+              <span>Final payment at completion</span>
               <span className="font-semibold text-ivory">{fmt(finalToContractor)}</span>
             </div>
             <p className={`rounded-xl px-3 py-2 text-xs font-semibold ${depositCoversMaterials ? "bg-emerald-950/40 text-emerald-200" : "bg-red-950/40 text-red-200"}`}>
-              {depositCoversMaterials ? "Deposit remainder covers estimated materials." : "Deposit remainder is below estimated materials."}
+              {depositCoversMaterials ? "Covers materials" : "Below material cost"}
             </p>
           </div>
         </div>
@@ -219,7 +222,7 @@ export function ContractorsGate() {
             {matCosts.map((item) => {
               const cost = item.isBase ? item.cost * kitsNeeded : item.cost;
               return (
-                <div key={item.key} className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
+                <div key={item.id} className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
                   <div>
                     <p>{item.label}{item.isBase && kitsNeeded > 1 ? " x2" : ""}</p>
                     <p className="text-xs text-slate-400">{item.note}</p>
@@ -251,7 +254,7 @@ export function ContractorsGate() {
               <span className={`font-semibold ${contractorProfit >= 0 ? "text-emerald-300" : "text-red-300"}`}>{fmt(contractorProfit)}</span>
             </div>
             <div className="flex items-start justify-between gap-3 border-b border-white/10 pb-2">
-              <span>Estimated labor hours</span>
+              <span>Est. labor hours ({sqft > 350 ? "2-day" : "1-day"} job)</span>
               <span className="font-semibold text-ivory">~{hoursEst} hrs</span>
             </div>
             <div className="flex items-start justify-between gap-3 pt-1">
