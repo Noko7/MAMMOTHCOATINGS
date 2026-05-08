@@ -137,16 +137,6 @@ export const locations: Record<LocationKey, LocationContent> = {
         after: "/images/epoxy_flooring_after_200.jpeg",
         label: "Epoxy Floor Upgrade 200",
       },
-      {
-        before: "/images/raleigh_epoxy_walmart_entryway_before.jpg",
-        after: "/images/raleigh_epoxy_walmart_entryway_after.jpg",
-        label: "Commercial Entryway",
-      },
-      {
-        before: "/images/restaurant_before_raleigh_epoxy.jpg",
-        after: "/images/restaurant_after_raleigh_epoxy.jpg",
-        label: "Restaurant Floor",
-      },
     ],
     neighborhoods: ["North Hills", "Brier Creek", "Five Points", "Wake Forest", "Knightdale"],
   },
@@ -160,14 +150,14 @@ export const locations: Record<LocationKey, LocationContent> = {
     heroImage: "/images/garage_floor_coatoing_raleigh.jpg",
     beforeAfterPairs: [
       {
-        before: "/images/2-car-garage-before.jpg",
-        after: "/images/2-car-garage-after.jpg",
-        label: "2-Car Garage",
+        before: "/images/epoxy_flooring_before_100.jpeg",
+        after: "/images/epoxy_flooring_after_100.jpeg",
+        label: "Epoxy Floor Upgrade 100",
       },
       {
-        before: "/images/2-car-garage-before-v2.jpg",
-        after: "/images/2-car-garage-after-v2.jpg",
-        label: "Garage Floor Finish",
+        before: "/images/epoxy_flooring_before_200.jpeg",
+        after: "/images/epoxy_flooring_after_200.jpeg",
+        label: "Epoxy Floor Upgrade 200",
       },
     ],
     neighborhoods: ["Downtown Apex", "Scotts Mill", "Bella Casa", "Friendship", "Holly Springs"],
@@ -182,14 +172,14 @@ export const locations: Record<LocationKey, LocationContent> = {
     heroImage: "/images/eopxy_raleigh_nc.png",
     beforeAfterPairs: [
       {
-        before: "/images/basement_before_epoxy.jpg",
-        after: "/images/basement_after_epoxy.jpg",
-        label: "Basement Floor",
+        before: "/images/epoxy_flooring_before_100.jpeg",
+        after: "/images/epoxy_flooring_after_100.jpeg",
+        label: "Epoxy Floor Upgrade 100",
       },
       {
-        before: "/images/restaurant_before_raleigh_epoxy.jpg",
-        after: "/images/restaurant_after_raleigh_epoxy.jpg",
-        label: "Commercial Space",
+        before: "/images/epoxy_flooring_before_200.jpeg",
+        after: "/images/epoxy_flooring_after_200.jpeg",
+        label: "Epoxy Floor Upgrade 200",
       },
     ],
     neighborhoods: ["Southpoint", "Hope Valley", "Trinity Park", "Research Triangle Park", "Bahama"],
